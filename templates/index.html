@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+    <title>GPT2 Anime recommendation</title>
+    <style>
+        .separator {
+            display: flex;
+            align-items: center;
+            text-align: center;
+        }
+
+        .separator::before,
+        .separator::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #5A6268;
+        }
+
+        .separator::before {
+            margin-right: .25em;
+        }
+
+        .separator::after {
+            margin-left: .25em;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+
+        function call_api(length) {
+            showLoading();
+            $.ajax({
+                url: `/query?q=${$('#animeName').val()}&plus_length=${length}`,
+                type: "GET",
+
+                success: function (res) {
+                    showContent(res);
+                    showButton();
+                },
+                failure: function (errMsg) {
+                    showButton();
+                    alert(errMsg);
+                }
+            });
+        }
+        const showContent = (res) => {
+            console.log('kusa', res)
+            $('#content').html(`
+            <div class="card" style="width: 100%;">
+                <div class="card-body">
+                    <h5 class="card-title">${res.title1}</h5>
+                    <p class="card-text">${res.des1}</p>
+                </div>
+            </div>
+            <div class="separator my-4">And</div>
+            <div class="card" style="width: 100%;">
+                <div class="card-body">
+                    <h5 class="card-title">${res.title2}</h5>
+                    <p class="card-text">${res.des2}</p>
+                    </p>
+                </div>
+            </div>
+            <div class="separator my-4">Explaination</div>
+            <p class="text-justify">${res.reason}</p>
+            `)
+        }
+
+        const showLoading = () => {
+            $('#button').html(`
+            <div class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+            `)
+        }
+
+        const showButton = () => {
+            $('#button').html(`
+            <div id="button" class="text-center">
+                <button type="button" class="btn btn-secondary" onclick="call_api(300)">Get recommendation</button>
+                <button type="button" class="btn btn-secondary" onclick="call_api(350)">Get recommendation with longer
+                explaination</button>
+            </div>
+        `)
+        }
+    </script>
+</head>
+
+<body>
+
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="display-4">Anime recommendation using GPT2</h1>
+            <p class="lead">Get recommendation from your favorite anime</p>
+            <hr class="my-4">
+            <p>Data is crawled from Myanimelist.net</p>
+            <p>This is mostly for entertainment purposed due to the nature of the model, which mean:</p>
+            <ul>
+                <li>
+                    Description <b>will NOT be correct </b> - it's for fun.
+                </li>
+                <li>
+                    If your anime is in top 1500 of myanimelist the recommendation probably still gonna be okay.
+                </li>
+                <li>
+                    I beg for your patient. Generate time can go up to 1 minute.
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="container">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Your favorite anime</span>
+            </div>
+            <input type="text" class="form-control" id="animeName" aria-describedby="basic-addon3"
+                placeholder="Yahari Ore no Seishun Love Comedy wa Machigatteiru">
+        </div>
+        <div id="button" class="text-center">
+            <button type="button" class="btn btn-secondary" onclick="call_api(300)">Get recommendation</button>
+            <button type="button" class="btn btn-secondary" onclick="call_api(350)">Get recommendation with longer
+                explaination</button>
+        </div>
+        <hr class="my-4">
+        <div id="content">
+
+        </div>
+    </div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
